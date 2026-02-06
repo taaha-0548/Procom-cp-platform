@@ -3,14 +3,10 @@ import { INITIAL_CONFIG, MOCK_TEAMS } from './constants';
 import { Team, Submission } from './types';
 import ScoreboardTable from './components/ScoreboardTable';
 import GlitchText from './components/GlitchText';
-import ContestSettingsModal from './components/ContestSettingsModal';
-import { Server, Volume2, Settings, AlertOctagon, Clock } from 'lucide-react'; // Added AlertOctagon
+import { Server, Volume2 } from 'lucide-react';
 import {
   fetchInitialLeaderboardData,
-  fetchContestTimes,
-  fetchContestTime,
-  setupRealtimeLeaderboardListener,
-  setContestTimes
+  setupRealtimeLeaderboardListener
 } from './api';
 
 // =========================================================================
@@ -147,9 +143,6 @@ const App: React.FC = () => {
     "Welcome to PROCOM'26 PhantomVerse!",
     "Contest has started. Good luck to all participants."
   ]);
-
-  // Settings modal state
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Animation state machine - single source of truth
   const [animationState, setAnimationState] = useState<AnimationState>('idle');
@@ -317,31 +310,11 @@ const App: React.FC = () => {
         return;
       }
 
+      // Production mode: Initialize with real backend data
       console.log('🚀 Initializing app with real backend data...');
+      console.log('⏰ Using current time as contest start with 10-minute duration');
 
       try {
-        // Fetch contest timing from backend
-        console.log('⏰ Fetching contest timing from backend...');
-        const contestTime = await fetchContestTime();
-        if (contestTime) {
-          const startMs = new Date(contestTime.startTime).getTime();
-          const endMs = new Date(contestTime.endTime).getTime();
-
-          console.log('✅ Contest timing received from backend:');
-          console.log('   Start:', contestTime.startTime);
-          console.log('   End:', contestTime.endTime);
-          console.log('   Duration:', contestTime.duration, 'minutes');
-
-          // Update config with backend timing
-          setConfig({
-            ...INITIAL_CONFIG,
-            startTime: startMs,
-            endTime: endMs,
-          });
-        } else {
-          console.warn('⚠️  Could not fetch contest timing, using defaults from constants.ts');
-        }
-
         // Fetch initial leaderboard data
         const initialTeams = await fetchInitialLeaderboardData();
         if (initialTeams.length > 0) {
@@ -352,26 +325,6 @@ const App: React.FC = () => {
           console.warn('⚠️  No initial data from backend, using mock data');
           setTeams(MOCK_TEAMS);
           teamsRef.current = MOCK_TEAMS;
-        }
-
-        // Fetch contest times
-        const times = await fetchContestTimes();
-        if (times.startTime && times.endTime) {
-          console.log('✅ Contest times loaded');
-          console.log('📅 Backend start time:', times.startTime);
-          console.log('📅 Backend end time:', times.endTime);
-          // Update config with server times
-          const newConfig = {
-            ...config,
-            startTime: new Date(times.startTime).getTime(),
-            endTime: new Date(times.endTime).getTime(),
-          };
-          console.log('🔧 Frontend config updated:', {
-            startTime: new Date(newConfig.startTime).toISOString(),
-            endTime: new Date(newConfig.endTime).toISOString(),
-            now: new Date().toISOString()
-          });
-          setConfig(newConfig);
         }
 
         // Set up real-time Socket.io listener
@@ -593,34 +546,7 @@ const App: React.FC = () => {
     setTeams(rankedTeams);
   }, []);
 
-  // =========================================================================
-  // CONTEST SETTINGS HANDLER
-  // =========================================================================
 
-  const handleSaveContestSettings = useCallback(async (startTime: Date, duration: number) => {
-    try {
-      // Calculate end time
-      const endTime = new Date(startTime.getTime() + duration * 60 * 1000);
-
-      // Update local state
-      const newConfig = {
-        ...config,
-        startTime: startTime.getTime(),
-        endTime: endTime.getTime(),
-      };
-      setConfig(newConfig);
-
-      // Save to backend
-      const saved = await setContestTimes(startTime.toISOString(), endTime.toISOString());
-      if (saved) {
-        console.log('✅ Contest times saved successfully');
-      } else {
-        console.warn('⚠️  Contest times saved locally but backend may not be available');
-      }
-    } catch (error) {
-      console.error('Error saving contest settings:', error);
-    }
-  }, [config]);
 
   // =========================================================================
   // SIMULATION ENGINE (Removed - Now using real Socket.io updates)
@@ -757,15 +683,6 @@ const App: React.FC = () => {
         <Volume2 size={24} className={isSoundEnabled ? "text-cyan-400" : "text-red-500"} />
       </button>
 
-      {/* Settings Button */}
-      <button
-        onClick={() => setIsSettingsOpen(true)}
-        className="fixed top-6 right-24 z-[100] bg-erevos-deep/80 hover:bg-phantom-error/20 transition-all duration-200 rounded-lg p-3 text-solid-bone border border-phantom-blood hover:border-phantom-error cursor-pointer backdrop-blur-md"
-        title="Contest Settings"
-      >
-        <Settings size={24} className="text-ghost-cyan" />
-      </button>
-
       {/* Main Scoreboard Area */}
       <main className="max-w-[98%] xl:max-w-[96%] mx-auto px-2 md:px-4 z-10 relative mb-24">
         <div className="flex justify-between items-end mb-2 px-2">
@@ -809,14 +726,6 @@ const App: React.FC = () => {
         )}
       </main>
 
-      {/* Contest Settings Modal */}
-      <ContestSettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        onSave={handleSaveContestSettings}
-        currentStart={new Date(config.startTime)}
-        currentDuration={Math.floor((config.endTime - config.startTime) / (60 * 1000))}
-      />
 
       {/* Before Contest Modal */}
       {phase === 'before' && (

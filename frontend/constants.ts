@@ -15,10 +15,10 @@ const NOW = Date.now();
 const TEN_MINUTES = 10 * 60 * 1000;
 
 // ====================================================================================
-// CONTEST TIMING - Now fetched from backend API
+// CONTEST TIMING - Uses current time + 10 minutes
 // ====================================================================================
-// These functions provide defaults for mock mode or when backend is unavailable
-// In production, App.tsx will fetch real times from backend and update config state
+// In mock mode: uses current time
+// In production mode: uses current time when frontend loads + 10 minute duration
 // ====================================================================================
 
 const getContestStart = (): number => {
@@ -29,25 +29,17 @@ const getContestStart = (): number => {
     return NOW;
   }
 
-  // Default fallback: started 5 minutes ago
-  // Will be overridden by backend API data in App.tsx
-  console.log('⚠️  Using default contest start time (will be fetched from backend)');
-  return NOW - (5 * 60 * 1000);
+  // Production mode: Start at current time
+  console.log('🚀 Production mode: Contest starts at current time');
+  return NOW;
 };
 
 const getContestEnd = (): number => {
-  const useMockMode = import.meta.env.VITE_USE_MOCK_DATA === 'true';
   const startTime = getContestStart();
-
-  if (useMockMode) {
-    console.log('🎭 Mock mode: Setting 10-minute duration');
-    return startTime + TEN_MINUTES;
-  }
-
-  // Default fallback: 4 hours duration
-  // Will be overridden by backend API data in App.tsx
-  console.log('⚠️  Using default contest duration (will be fetched from backend)');
-  return startTime + (4 * 60 * 60 * 1000);
+  
+  // Always use 10-minute duration
+  console.log('⏰ Setting 10-minute contest duration');
+  return startTime + TEN_MINUTES;
 };
 
 export const INITIAL_CONFIG: ContestConfig = {
