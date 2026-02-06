@@ -11,23 +11,26 @@ dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const KEY = process.env.KEY;
 
-// ------------------------------------ CONFIG ------------------------------------
-// Single leaderboard URL - update this to your vjudge contest
-const LEADERBOARD_URL = process.env.LEADERBOARD_URL || "https://vjudge.net/contest/767305#rank";
+// ==================== CONTEST CONFIGURATION ====================
+// Update VJudge contest URL before running
+const LEADERBOARD_URL = "https://vjudge.net/contest/786329#rank";
+// ==============================================================
 
 // Backend URL - can be set via environment variable
-const BACKENDURL = process.env.BACKEND_URL || "https://coderscup-scoreboard-backend.onrender.com";
+const BACKENDURL = process.env.BACKEND_URL || "http://localhost:4000";
 
-// Contest timing
-const CONTEST_START = process.env.CONTEST_START || "2025-11-20T11:30:00+05:00";
-const CONTEST_DURATION = parseInt(process.env.CONTEST_DURATION || "300"); // minutes
+// ==================== CONTEST TIMING CONFIGURATION ====================
+// Update these values directly before running the script
+const CONTEST_START = "2026-02-06T18:00:00+05:00";  // Contest start time (ISO 8601)
+const CONTEST_DURATION = 300;  // Duration in minutes
+// ======================================================================
 
 // Calculate contest end time
 const calculateContestEnd = () => {
     const startDate = new Date(CONTEST_START);
     const durationMs = CONTEST_DURATION * 60 * 1000;
     const endDate = new Date(startDate.getTime() + durationMs);
-    
+
     // Format to match start time timezone format
     const year = endDate.getFullYear();
     const month = String(endDate.getMonth() + 1).padStart(2, '0');
@@ -35,7 +38,7 @@ const calculateContestEnd = () => {
     const hours = String(endDate.getHours()).padStart(2, '0');
     const minutes = String(endDate.getMinutes()).padStart(2, '0');
     const seconds = String(endDate.getSeconds()).padStart(2, '0');
-    
+
     // Extract timezone from CONTEST_START
     const timezone = CONTEST_START.substring(CONTEST_START.lastIndexOf('+'));
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${timezone}`;
@@ -51,7 +54,7 @@ console.log('   Duration:', CONTEST_DURATION, 'minutes');
 
 // Scraping interval (milliseconds)
 const SCRAPING_INTERVAL = parseInt(process.env.SCRAPING_INTERVAL || "30000");
-// ------------------------------------ CONFIG ------------------------------------
+// ==============================================================
 
 const VIEWPORT = { width: 1920, height: 1080 };
 const RANK_TABLE_SELECTOR = "#contest-rank-table";
@@ -272,9 +275,9 @@ const scrapingInterval = setInterval(() => {
         clearInterval(scrapingInterval);
         process.exit(0);
     }
-    
+
     scrapeAndSendData();
 }, SCRAPING_INTERVAL);
 
-console.log(`🚀 Script started! Scraping every ${SCRAPING_INTERVAL/1000} seconds from: ${LEADERBOARD_URL}`);
+console.log(`🚀 Script started! Scraping every ${SCRAPING_INTERVAL / 1000} seconds from: ${LEADERBOARD_URL}`);
 console.log(`📅 Contest will auto-stop when ended.`);

@@ -8,6 +8,7 @@ import { Server, Volume2, Settings, AlertOctagon, Clock } from 'lucide-react'; /
 import {
   fetchInitialLeaderboardData,
   fetchContestTimes,
+  fetchContestTime,
   setupRealtimeLeaderboardListener,
   setContestTimes
 } from './api';
@@ -319,6 +320,28 @@ const App: React.FC = () => {
       console.log('🚀 Initializing app with real backend data...');
 
       try {
+        // Fetch contest timing from backend
+        console.log('⏰ Fetching contest timing from backend...');
+        const contestTime = await fetchContestTime();
+        if (contestTime) {
+          const startMs = new Date(contestTime.startTime).getTime();
+          const endMs = new Date(contestTime.endTime).getTime();
+
+          console.log('✅ Contest timing received from backend:');
+          console.log('   Start:', contestTime.startTime);
+          console.log('   End:', contestTime.endTime);
+          console.log('   Duration:', contestTime.duration, 'minutes');
+
+          // Update config with backend timing
+          setConfig({
+            ...INITIAL_CONFIG,
+            startTime: startMs,
+            endTime: endMs,
+          });
+        } else {
+          console.warn('⚠️  Could not fetch contest timing, using defaults from constants.ts');
+        }
+
         // Fetch initial leaderboard data
         const initialTeams = await fetchInitialLeaderboardData();
         if (initialTeams.length > 0) {

@@ -7,6 +7,31 @@ import { Team, Submission, ProblemStatus } from './types';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000';
 
+// ==================== CONTEST TIMING API ====================
+export interface ContestTimeResponse {
+  startTime: string;
+  endTime: string;
+  duration: number;
+}
+
+export const fetchContestTime = async (): Promise<ContestTimeResponse | null> => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/getContestTime`);
+    if (!response.ok) {
+      console.error('Failed to fetch contest time:', response.statusText);
+      return null;
+    }
+    const data = await response.json();
+    console.log('✅ Fetched contest time from backend:', data);
+    return data;
+  } catch (error) {
+    console.error('❌ Error fetching contest time:', error);
+    return null;
+  }
+};
+// ===========================================================
+
+
 /**
  * Transform server leaderboard format to frontend Team structure
  * 
@@ -17,10 +42,10 @@ function transformServerDataToTeams(serverRows: any[]): Team[] {
   return serverRows.map((row, index) => {
     // Create submissions from problems array
     const submissions: Record<string, Submission> = {};
-    
+
     row.problems?.forEach((problem: any, idx: number) => {
       const problemId = `p${idx + 1}`;
-      
+
       // Map status string to ProblemStatus enum
       let status = ProblemStatus.NOT_ATTEMPTED;
       if (problem.status === 'Accepted') {
@@ -83,10 +108,10 @@ export async function fetchInitialLeaderboardData(): Promise<Team[]> {
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
-    
+
     const data = await response.json();
     console.log('Initial leaderboard data fetched:', data);
-    
+
     // Handle both possible response formats
     const rows = data.rows || data;
     return transformServerDataToTeams(rows);
@@ -105,7 +130,7 @@ export async function fetchContestTimes(): Promise<{ startTime: string | null; e
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
-    
+
     const data = await response.json();
     return {
       startTime: data.startTime,
@@ -137,14 +162,14 @@ export function setupRealtimeLeaderboardListener(
 
     socket.on('connect', () => {
       console.log('✅ Connected to leaderboard server');
-      
+
       // Join scoreboard room to receive updates
       socket.emit('joinRoom', 'scoreboard');
     });
 
     socket.on('sendData', (payload: any) => {
       console.log('📊 New leaderboard data received:', payload);
-      
+
       try {
         // Transform server data to frontend format
         const teams = transformServerDataToTeams(payload.rows || payload);
@@ -186,7 +211,7 @@ export async function fetchTopTeams(batch: string = 'scoreboard'): Promise<Team[
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
-    
+
     const data = await response.json();
     const rows = Array.isArray(data) ? data : [data];
     return transformServerDataToTeams(rows);
@@ -205,7 +230,7 @@ export async function fetchHouseRankings(): Promise<any> {
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Error fetching house rankings:', error);

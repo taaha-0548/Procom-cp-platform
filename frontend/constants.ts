@@ -14,38 +14,40 @@ export const PROBLEMS: ProblemData[] = [
 const NOW = Date.now();
 const TEN_MINUTES = 10 * 60 * 1000;
 
-// Get contest times - in mock mode use current time, otherwise use env variables
+// ====================================================================================
+// CONTEST TIMING - Now fetched from backend API
+// ====================================================================================
+// These functions provide defaults for mock mode or when backend is unavailable
+// In production, App.tsx will fetch real times from backend and update config state
+// ====================================================================================
+
 const getContestStart = (): number => {
   const useMockMode = import.meta.env.VITE_USE_MOCK_DATA === 'true';
-  
+
   if (useMockMode) {
     console.log('🎭 Mock mode: Using current time as contest start');
     return NOW;
   }
-  
-  const envStart = import.meta.env.VITE_CONTEST_START;
-  console.log('🔍 Environment VITE_CONTEST_START:', envStart);
-  if (envStart) {
-    return new Date(envStart).getTime();
-  }
-  return NOW - (5 * 60 * 1000); // Default: Started 5 minutes ago
+
+  // Default fallback: started 5 minutes ago
+  // Will be overridden by backend API data in App.tsx
+  console.log('⚠️  Using default contest start time (will be fetched from backend)');
+  return NOW - (5 * 60 * 1000);
 };
 
 const getContestEnd = (): number => {
   const useMockMode = import.meta.env.VITE_USE_MOCK_DATA === 'true';
   const startTime = getContestStart();
-  
+
   if (useMockMode) {
     console.log('🎭 Mock mode: Setting 10-minute duration');
     return startTime + TEN_MINUTES;
   }
-  
-  const duration = import.meta.env.VITE_CONTEST_DURATION;
-  console.log('⏱️ Environment VITE_CONTEST_DURATION:', duration);
-  if (duration) {
-    return startTime + (parseInt(duration) * 60 * 1000); // Convert minutes to milliseconds
-  }
-  return startTime + (4 * 60 * 60 * 1000); // Default: 4 hours duration
+
+  // Default fallback: 4 hours duration
+  // Will be overridden by backend API data in App.tsx
+  console.log('⚠️  Using default contest duration (will be fetched from backend)');
+  return startTime + (4 * 60 * 60 * 1000);
 };
 
 export const INITIAL_CONFIG: ContestConfig = {
