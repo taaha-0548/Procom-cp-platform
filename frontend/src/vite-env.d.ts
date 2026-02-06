@@ -1,0 +1,13 @@
+/// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly VITE_BACKEND_URL: string;
+  readonly VITE_AUTH_KEY?: string;
+  readonly VITE_CONTEST_START?: string;
+  readonly VITE_CONTEST_DURATION?: string;
+  // Add other environment variables here as needed
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
