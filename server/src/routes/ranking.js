@@ -153,18 +153,16 @@ export default function rankingRoutes(io) {
             const durationMs = parseInt(contestTimes.duration) * 60 * 1000;
             const endDate = new Date(startDate.getTime() + durationMs);
             
-            // Format endTime in same timezone as startTime
+            // Extract timezone from original startTime string
             const timezone = contestTimes.startTime.substring(contestTimes.startTime.lastIndexOf('+'));
-            const endLocalTime = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 
-                                         startDate.getHours(), startDate.getMinutes(), startDate.getSeconds());
-            endLocalTime.setTime(endLocalTime.getTime() + durationMs);
             
-            const year = endLocalTime.getFullYear();
-            const month = String(endLocalTime.getMonth() + 1).padStart(2, '0');
-            const day = String(endLocalTime.getDate()).padStart(2, '0');
-            const hours = String(endLocalTime.getHours()).padStart(2, '0');
-            const minutes = String(endLocalTime.getMinutes()).padStart(2, '0');
-            const seconds = String(endLocalTime.getSeconds()).padStart(2, '0');
+            // Format endDate with the same timezone
+            const year = endDate.getFullYear();
+            const month = String(endDate.getMonth() + 1).padStart(2, '0');
+            const day = String(endDate.getDate()).padStart(2, '0');
+            const hours = String(endDate.getHours()).padStart(2, '0');
+            const minutes = String(endDate.getMinutes()).padStart(2, '0');
+            const seconds = String(endDate.getSeconds()).padStart(2, '0');
             
             const endTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${timezone}`;
             

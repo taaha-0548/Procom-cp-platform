@@ -16,12 +16,12 @@ const KEY = process.env.KEY;
 // ============================================================================
 
 // 1️⃣ VJudge Contest URL (get from VJudge contest page)
-const LEADERBOARD_URL = "https://vjudge.net/contest/788394#rank";
+const LEADERBOARD_URL = "https://vjudge.net/contest/788456#rank";
 
 // 2️⃣ Contest Start Time (ISO 8601 format with timezone)
 //    Format: YYYY-MM-DDTHH:MM:SS+05:00
-//    Example: "2026-02-07T15:00:00+05:00" = Feb 7, 2026, 3:00 PM PKT
-const CONTEST_START = "2026-02-07T15:00:00+05:00";
+//    Example: "2026-02-07T19:10:00+05:00" = Feb 7, 2026, 7:10 PM PKT
+const CONTEST_START = "2026-02-07T19:10:00+05:00";
 
 // 3️⃣ Contest Duration (in minutes)
 //    180 = 3 hours, 240 = 4 hours, 300 = 5 hours
