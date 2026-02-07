@@ -147,28 +147,10 @@ export default function rankingRoutes(io) {
     });
 
     router.get('/getContestTime', (req, res) => {
-        // Calculate endTime from startTime + duration
+        // Just return startTime and duration - let frontend calculate endTime
         if (contestTimes.startTime && contestTimes.duration) {
-            const startDate = new Date(contestTimes.startTime);
-            const durationMs = parseInt(contestTimes.duration) * 60 * 1000;
-            const endDate = new Date(startDate.getTime() + durationMs);
-            
-            // Extract timezone from original startTime string
-            const timezone = contestTimes.startTime.substring(contestTimes.startTime.lastIndexOf('+'));
-            
-            // Format endDate with the same timezone
-            const year = endDate.getFullYear();
-            const month = String(endDate.getMonth() + 1).padStart(2, '0');
-            const day = String(endDate.getDate()).padStart(2, '0');
-            const hours = String(endDate.getHours()).padStart(2, '0');
-            const minutes = String(endDate.getMinutes()).padStart(2, '0');
-            const seconds = String(endDate.getSeconds()).padStart(2, '0');
-            
-            const endTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${timezone}`;
-            
             return res.status(200).json({ 
                 startTime: contestTimes.startTime, 
-                endTime,
                 duration: contestTimes.duration 
             });
         }

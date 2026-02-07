@@ -23,6 +23,23 @@ export const fetchContestTime = async (): Promise<ContestTimeResponse | null> =>
     }
     const data = await response.json();
     console.log('✅ Fetched contest time from backend:', data);
+    
+    // Calculate endTime on frontend (eliminates backend timezone bug)
+    if (data.startTime && data.duration) {
+      const startDate = new Date(data.startTime);
+      const durationMs = parseInt(data.duration) * 60 * 1000;
+      const endDate = new Date(startDate.getTime() + durationMs);
+      
+      // Format endTime in ISO string format
+      const endTime = endDate.toISOString().replace('Z', data.startTime.slice(-6)); // Keep original timezone
+      
+      return {
+        startTime: data.startTime,
+        endTime,
+        duration: data.duration
+      };
+    }
+    
     return data;
   } catch (error) {
     console.error('❌ Error fetching contest time:', error);
