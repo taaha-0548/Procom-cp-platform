@@ -6,7 +6,8 @@ import GlitchText from './components/GlitchText';
 import { Server, Volume2 } from 'lucide-react';
 import {
   fetchInitialLeaderboardData,
-  setupRealtimeLeaderboardListener
+  setupRealtimeLeaderboardListener,
+  fetchContestTime
 } from './api';
 
 // =========================================================================
@@ -312,9 +313,27 @@ const App: React.FC = () => {
 
       // Production mode: Initialize with real backend data
       console.log('🚀 Initializing app with real backend data...');
-      console.log('⏰ Using current time as contest start with 10-minute duration');
 
       try {
+        // Fetch contest times from backend
+        const contestTime = await fetchContestTime();
+        if (contestTime && contestTime.startTime && contestTime.endTime) {
+          const startTime = new Date(contestTime.startTime).getTime();
+          const endTime = new Date(contestTime.endTime).getTime();
+          console.log('✅ Contest times loaded from backend:', {
+            start: contestTime.startTime,
+            end: contestTime.endTime,
+            duration: contestTime.duration
+          });
+          setConfig(prev => ({
+            ...prev,
+            startTime,
+            endTime
+          }));
+        } else {
+          console.warn('⚠️ Failed to fetch contest times, using fallback');
+        }
+
         // Fetch initial leaderboard data
         const initialTeams = await fetchInitialLeaderboardData();
         if (initialTeams.length > 0) {

@@ -13,7 +13,7 @@ const KEY = process.env.KEY;
 
 // ==================== CONTEST CONFIGURATION ====================
 // Update VJudge contest URL before running
-const LEADERBOARD_URL = "https://vjudge.net/contest/786329#rank";
+const LEADERBOARD_URL = "https://vjudge.net/contest/788394#rank";
 // ==============================================================
 
 // Backend URL - can be set via environment variable
@@ -21,8 +21,8 @@ const BACKENDURL = process.env.BACKEND_URL || "http://localhost:4000";
 
 // ==================== CONTEST TIMING CONFIGURATION ====================
 // Update these values directly before running the script
-const CONTEST_START = "2026-02-06T18:00:00+05:00";  // Contest start time (ISO 8601)
-const CONTEST_DURATION = 300;  // Duration in minutes
+const CONTEST_START = "2026-02-07T15:00:00+05:00";  // Contest start time (ISO 8601)
+const CONTEST_DURATION = 180;  // Duration in minutes
 // ======================================================================
 
 // Calculate contest end time
