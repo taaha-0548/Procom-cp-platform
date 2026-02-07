@@ -30,8 +30,18 @@ export const fetchContestTime = async (): Promise<ContestTimeResponse | null> =>
       const durationMs = parseInt(data.duration) * 60 * 1000;
       const endDate = new Date(startDate.getTime() + durationMs);
       
-      // Format endTime in ISO string format
-      const endTime = endDate.toISOString().replace('Z', data.startTime.slice(-6)); // Keep original timezone
+      // Extract timezone from original startTime
+      const timezone = data.startTime.slice(-6); // Gets "+05:00"
+      
+      // Format endDate manually to preserve timezone
+      const year = endDate.getFullYear();
+      const month = String(endDate.getMonth() + 1).padStart(2, '0');
+      const day = String(endDate.getDate()).padStart(2, '0');
+      const hours = String(endDate.getHours()).padStart(2, '0');
+      const minutes = String(endDate.getMinutes()).padStart(2, '0');
+      const seconds = String(endDate.getSeconds()).padStart(2, '0');
+      
+      const endTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${timezone}`;
       
       return {
         startTime: data.startTime,
