@@ -34,22 +34,22 @@ const ProblemCell: React.FC<ProblemCellProps> = memo(({ submission }) => {
 
   const getIcon = () => {
     switch (submission.status) {
-      case ProblemStatus.ACCEPTED: return <Check size={14} strokeWidth={3} />;
-      case ProblemStatus.WRONG_ANSWER: return <X size={14} />;
-      case ProblemStatus.PENDING: return <Clock size={14} />;
-      case ProblemStatus.TIME_LIMIT: return <AlertCircle size={14} />;
-      default: return <Minus size={14} />;
+      case ProblemStatus.ACCEPTED: return <Check className="w-3 h-3 md:w-3.5 md:h-3.5" strokeWidth={3} />;
+      case ProblemStatus.WRONG_ANSWER: return <X className="w-3 h-3 md:w-3.5 md:h-3.5" />;
+      case ProblemStatus.PENDING: return <Clock className="w-3 h-3 md:w-3.5 md:h-3.5" />;
+      case ProblemStatus.TIME_LIMIT: return <AlertCircle className="w-3 h-3 md:w-3.5 md:h-3.5" />;
+      default: return <Minus className="w-3 h-3 md:w-3.5 md:h-3.5" />;
     }
   };
 
   return (
-    <div className={`flex flex-col justify-center items-center h-12 w-12 md:h-14 md:w-16 rounded border ${getStyle()} transition-all duration-200 mx-auto`}>
+    <div className={`flex flex-col justify-center items-center h-11 w-11 sm:h-12 sm:w-12 md:h-14 md:w-16 rounded border ${getStyle()} transition-all duration-200 mx-auto`}>
       <div className="mb-0.5">{getIcon()}</div>
       {submission.status === ProblemStatus.ACCEPTED && (
-        <span className="text-[10px] font-mono leading-none">{submission.time}'</span>
+        <span className="text-[9px] sm:text-[10px] font-mono leading-none">{submission.time}'</span>
       )}
       {submission.status !== ProblemStatus.ACCEPTED && submission.status !== ProblemStatus.PENDING && submission.attempts > 0 && (
-        <span className="text-[10px] font-mono leading-none">-{submission.attempts}</span>
+        <span className="text-[9px] sm:text-[10px] font-mono leading-none">-{submission.attempts}</span>
       )}
     </div>
   );

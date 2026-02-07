@@ -241,4 +241,72 @@ export const MOCK_TEAMS: Team[] = [
       p8: { problemId: 'p8', status: ProblemStatus.NOT_ATTEMPTED, attempts: 0, time: 0, isFirstBlood: false },
     }
   },
+  ...Array.from({ length: 40 }, (_, i) => {
+    const teamNum = i + 11;
+    const solved = Math.max(0, Math.floor(Math.random() * 4));
+    const penalty = solved > 0 ? 20 + Math.floor(Math.random() * 100) : 0;
+    
+    const createSubmissions = () => {
+      const subs: any = {};
+      const solvedProblems = new Set<string>();
+      
+      // Randomly select which problems to solve
+      if (solved > 0) {
+        const problemIds = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8'];
+        const shuffled = problemIds.sort(() => Math.random() - 0.5);
+        for (let j = 0; j < solved; j++) {
+          solvedProblems.add(shuffled[j]);
+        }
+      }
+      
+      // Create submission for each problem
+      PROBLEMS.forEach(prob => {
+        if (solvedProblems.has(prob.id)) {
+          subs[prob.id] = {
+            problemId: prob.id,
+            status: ProblemStatus.ACCEPTED,
+            attempts: Math.ceil(Math.random() * 3),
+            time: 10 + Math.floor(Math.random() * 90),
+            isFirstBlood: false
+          };
+        } else {
+          // Some teams have wrong answers, others haven't attempted
+          const hasAttempted = Math.random() > 0.7;
+          subs[prob.id] = {
+            problemId: prob.id,
+            status: hasAttempted ? ProblemStatus.WRONG_ANSWER : ProblemStatus.NOT_ATTEMPTED,
+            attempts: hasAttempted ? Math.ceil(Math.random() * 2) : 0,
+            time: 0,
+            isFirstBlood: false
+          };
+        }
+      });
+      
+      return subs;
+    };
+    
+    const teamNames = [
+      'Algorithm Assassins', 'Compile Commanders', 'Debug Demons', 'Exception Handlers',
+      'Function Fighters', 'Git Gurus', 'Hash Heroes', 'Iterator Insurgents',
+      'JSON Juggernauts', 'Kernel Knights', 'Lambda Legends', 'Memory Masters',
+      'Null Ninjas', 'Object Outlaws', 'Pointer Pirates', 'Query Questers',
+      'Runtime Raiders', 'Scope Slayers', 'Thread Titans', 'Unicode Unicorns',
+      'Variable Vikings', 'Webpack Warriors', 'XML Xperts', 'Yield Yielders',
+      'Zero Day Zealots', 'Array Avengers', 'Boolean Barbarians', 'Cache Crusaders',
+      'Data Dervishes', 'Enum Enforcers', 'Fiber Forgers', 'Graph Guardians',
+      'Heap Hunters', 'Index Invaders', 'Join Jesters', 'Key Keepers',
+      'Loop Luminaries', 'Mutex Mavericks', 'Node Nomads', 'Overflow Orchestra'
+    ];
+    
+    return {
+      id: `t${teamNum}`,
+      name: teamNames[i] || `Team ${teamNum}`,
+      university: '',
+      solved,
+      penalty,
+      rank: teamNum,
+      trend: 'same' as const,
+      submissions: createSubmissions()
+    };
+  })
 ];

@@ -633,7 +633,7 @@ const App: React.FC = () => {
                 <img
                   src="/procom-logo.webp"
                   alt="Procom Logo"
-                  className="h-56 w-56 object-contain drop-shadow-2xl"
+                  className="h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48 lg:h-56 lg:w-56 object-contain drop-shadow-2xl"
                   style={{ background: 'none', border: 'none' }}
                 />
               </div>
@@ -647,9 +647,9 @@ const App: React.FC = () => {
               <GlitchText
                 text="COMPETITIVE PROGRAMMING"
                 as="h2"
-                className="text-3xl md:text-4xl font-orbitron font-bold tracking-wider italic glow-text"
+                className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-orbitron font-bold tracking-wider italic glow-text"
               />
-              <div className="text-3xl md:text-4xl font-orbitron font-bold tracking-wider italic uppercase mt-0 relative inline-block">
+              <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-orbitron font-bold tracking-wider italic uppercase mt-0 relative inline-block">
                 {/* Main Gradient Text */}
                 <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-phantom-neon via-phantom-laser to-rose-500">
                   PhantomVerse
@@ -667,15 +667,15 @@ const App: React.FC = () => {
           </div>
 
           {/* Contest Info & Timer */}
-          <div className="flex flex-col items-center lg:items-end z-10">
-            <div className="mb-2 flex items-center space-x-2">
+          <div className="flex flex-col items-center z-10">
+            <div className="mb-1 md:mb-2 flex items-center space-x-2">
               <span className={`w-2 h-2 rounded-full animate-pulse ${phase === 'during' ? 'bg-green-500' : phase === 'before' ? 'bg-yellow-500' : 'bg-gray-500'}`}></span>
-              <span className={`font-bold font-mono text-sm uppercase tracking-widest ${phase === 'during' ? 'text-green-500' : phase === 'before' ? 'text-yellow-500' : 'text-gray-500'}`}>
+              <span className={`font-bold font-mono text-xs sm:text-sm uppercase tracking-widest ${phase === 'during' ? 'text-green-500' : phase === 'before' ? 'text-yellow-500' : 'text-gray-500'}`}>
                 {phase === 'before' ? 'Contest Starts' : phase === 'during' ? 'Contest Live' : 'Contest Ended'}
               </span>
             </div>
-            <div className="text-3xl md:text-4xl font-orbitron font-bold text-amber-500 tabular-nums">
-              {countdownLabel && <span className="text-sm text-gray-300">{countdownLabel} </span>}
+            <div className="text-2xl sm:text-3xl md:text-4xl font-orbitron font-bold text-amber-500 tabular-nums">
+              {countdownLabel && <span className="text-xs sm:text-sm text-gray-300">{countdownLabel} </span>}
               {countdownDisplay}
             </div>
           </div>
@@ -701,19 +701,19 @@ const App: React.FC = () => {
           setIsSoundEnabled(!isSoundEnabled);
           console.log('🔊 Sound toggled to:', !isSoundEnabled);
         }}
-        className="fixed top-6 right-6 z-[100] bg-erevos-deep/80 hover:bg-phantom-error/20 transition-all duration-200 rounded-lg p-3 text-solid-bone border border-phantom-blood hover:border-phantom-error cursor-pointer backdrop-blur-md"
+        className="fixed top-3 right-3 md:top-6 md:right-6 z-[100] bg-erevos-deep/80 hover:bg-phantom-error/20 active:bg-phantom-error/30 transition-all duration-200 rounded-lg p-2 md:p-3 text-solid-bone border border-phantom-blood hover:border-phantom-error cursor-pointer backdrop-blur-md touch-manipulation"
         title={isSoundEnabled ? "Mute" : "Unmute"}
       >
-        <Volume2 size={24} className={isSoundEnabled ? "text-cyan-400" : "text-red-500"} />
+        <Volume2 size={20} className={`md:w-6 md:h-6 ${isSoundEnabled ? "text-cyan-400" : "text-red-500"}`} />
       </button>
 
       {/* Main Scoreboard Area */}
-      <main className="max-w-[98%] xl:max-w-[96%] mx-auto px-2 md:px-4 z-10 relative mb-24">
-        <div className="flex justify-between items-end mb-2 px-2">
-          <h3 className="text-xl font-orbitron text-solid-bone flex items-center gap-2 tracking-widest">
-            <Server className="text-phantom-error" /> LIVE STANDINGS
+      <main className="max-w-[98%] xl:max-w-[96%] mx-auto px-2 md:px-4 z-10 relative mb-20 md:mb-24">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-2 px-2 gap-2">
+          <h3 className="text-base sm:text-lg md:text-xl font-orbitron text-solid-bone flex items-center gap-2 tracking-widest">
+            <Server className="text-phantom-error w-4 h-4 sm:w-5 sm:h-5" /> LIVE STANDINGS
           </h3>
-          <div className="text-xs font-mono text-ghost-cyan">
+          <div className="text-[10px] sm:text-xs font-mono text-ghost-cyan">
             SYNC: <span className="text-phantom-error animate-pulse">STABLE</span>
           </div>
         </div>
@@ -728,40 +728,40 @@ const App: React.FC = () => {
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-4 mt-6">
+          <div className="flex justify-center items-center gap-2 sm:gap-4 mt-4 md:mt-6">
             <button
               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="px-6 py-2 bg-phantom-crimson/40 hover:bg-phantom-crimson/60 disabled:opacity-30 disabled:cursor-not-allowed text-white font-orbitron rounded border border-phantom-blood hover:border-phantom-neon/50 transition-all backdrop-blur-sm"
+              className="px-4 sm:px-6 py-2 sm:py-3 bg-phantom-crimson/40 hover:bg-phantom-crimson/60 active:bg-phantom-crimson/70 disabled:opacity-30 disabled:cursor-not-allowed text-white font-orbitron text-sm sm:text-base rounded border border-phantom-blood hover:border-phantom-neon/50 transition-all backdrop-blur-sm touch-manipulation"
             >
               Previous
             </button>
-            <span className="text-white font-orbitron">
+            <span className="text-white font-orbitron text-xs sm:text-sm md:text-base whitespace-nowrap">
               Page {currentPage} of {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="px-6 py-2 bg-phantom-crimson/40 hover:bg-phantom-crimson/60 disabled:opacity-30 disabled:cursor-not-allowed text-white font-orbitron rounded border border-phantom-blood hover:border-phantom-neon/50 transition-all backdrop-blur-sm"
+              className="px-4 sm:px-6 py-2 sm:py-3 bg-phantom-crimson/40 hover:bg-phantom-crimson/60 active:bg-phantom-crimson/70 disabled:opacity-30 disabled:cursor-not-allowed text-white font-orbitron text-sm sm:text-base rounded border border-phantom-blood hover:border-phantom-neon/50 transition-all backdrop-blur-sm touch-manipulation"
             >
               Next
             </button>
           </div>
-        )}
+        )}  
       </main>
 
 
       {/* Before Contest Modal */}
       {phase === 'before' && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center">
-          <div className="mx-4 rounded-2xl bg-phantom-purple/90 shadow-2xl border-4 border-phantom-neon px-8 py-10 text-center">
-            <div className="text-4xl md:text-5xl font-orbitron text-white mb-2">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-lg rounded-2xl bg-phantom-purple/90 shadow-2xl border-4 border-phantom-neon px-4 sm:px-8 py-6 sm:py-10 text-center">
+            <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-orbitron text-white mb-2">
               Preparing for Liftoff...
             </div>
-            <div className="text-2xl md:text-3xl font-orbitron text-phantom-neon mb-6">
+            <div className="text-xl sm:text-2xl md:text-3xl font-orbitron text-phantom-neon mb-4 sm:mb-6">
               Contest starts soon!
             </div>
-            <div className="text-4xl font-orbitron font-bold text-phantom-cyan tabular-nums">
+            <div className="text-3xl sm:text-4xl md:text-5xl font-orbitron font-bold text-phantom-cyan tabular-nums">
               {countdownDisplay}
             </div>
           </div>
@@ -770,9 +770,9 @@ const App: React.FC = () => {
 
       {/* After Contest Modal - Split Reality Podium */}
       {phase === 'after' && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div
-            className="mx-4 rounded-2xl px-8 py-10 text-center max-w-4xl w-full backdrop-blur-xl"
+            className="rounded-2xl px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10 text-center max-w-4xl w-full backdrop-blur-xl"
             style={{
               background: 'linear-gradient(90deg, rgba(74, 5, 11, 0.95) 0%, rgba(0, 0, 0, 0.9) 50%, rgba(0, 50, 50, 0.95) 100%)',
               backgroundColor: '#050000',
@@ -783,7 +783,7 @@ const App: React.FC = () => {
             }}
           >
             <div
-              className="text-4xl md:text-5xl font-orbitron mb-6 tracking-wider text-white"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-orbitron mb-4 sm:mb-6 tracking-wider text-white"
               style={{
                 textShadow: '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 42, 77, 0.4), 0 0 20px rgba(0, 255, 255, 0.4)'
               }}
@@ -792,9 +792,9 @@ const App: React.FC = () => {
             </div>
 
             {/* Top 3 Winners */}
-            <div className="mb-8">
+            <div className="mb-6 sm:mb-8">
               <div
-                className="text-xl font-orbitron mb-6"
+                className="text-base sm:text-lg md:text-xl font-orbitron mb-4 sm:mb-6"
                 style={{
                   color: '#aaaaaa',
                   textShadow: '0 0 10px rgba(255, 255, 255, 0.2)'
@@ -802,7 +802,7 @@ const App: React.FC = () => {
               >
                 TOP 2 CHAMPIONS
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
                 {teams.slice(0, 2).map((team, index) => {
                   // Rank #1: Red Reality Champion
                   // Rank #2 & #3: Cyan Ghost Runners-up
@@ -820,7 +820,7 @@ const App: React.FC = () => {
                   return (
                     <div
                       key={team.id}
-                      className="relative rounded-lg p-8 backdrop-blur-md transform transition-all duration-300 hover:scale-105 hover:-translate-y-2 overflow-hidden"
+                      className="relative rounded-lg p-4 sm:p-6 md:p-8 backdrop-blur-md transform transition-all duration-300 hover:scale-105 hover:-translate-y-2 overflow-hidden"
                       style={{
                         background: 'linear-gradient(180deg, rgba(20, 20, 20, 0.9) 0%, rgba(10, 10, 10, 0.95) 100%)',
                         boxShadow: `0 20px 40px -10px ${isRedChampion ? 'rgba(255, 42, 77, 0.6)' : 'rgba(0, 255, 255, 0.5)'}, inset 0 -4px 0 0 ${isRedChampion ? '#ff2a4d' : '#00ffff'}`
@@ -836,7 +836,7 @@ const App: React.FC = () => {
                       />
 
                       <div
-                        className="text-3xl font-orbitron font-bold mb-3"
+                        className="text-2xl sm:text-3xl font-orbitron font-bold mb-2 sm:mb-3"
                         style={{
                           color: textColor,
                           textShadow: textShadow
@@ -844,7 +844,7 @@ const App: React.FC = () => {
                       >
                         #{team.rank}
                       </div>
-                      <div className="text-white font-orbitron text-2xl mb-4">{team.name}</div>
+                      <div className="text-white font-orbitron text-lg sm:text-xl md:text-2xl mb-3 sm:mb-4">{team.name}</div>
                     </div>
                   );
                 })}
@@ -852,7 +852,7 @@ const App: React.FC = () => {
             </div>
 
             <div
-              className="text-xl font-orbitron text-white"
+              className="text-base sm:text-lg md:text-xl font-orbitron text-white"
               style={{
                 textShadow: '0 0 10px rgba(255, 255, 255, 0.6)'
               }}
