@@ -51,11 +51,6 @@ export default function rankingRoutes(io) {
             
             const endTime = `${localYear}-${localMonth}-${localDay}T${endHours}:${endMinutes}:${endSeconds}${timezone}`;
             
-            console.log(`📅 Contest timing: ${startTime} to ${endTime} (${durationEnv} minutes)`);
-            console.log(`🕐 Start: ${startDate.toString()}`);
-            console.log(`🕐 End: ${endDate.toString()}`);
-            console.log(`⏱️ Duration: ${durationMs / (60 * 1000)} minutes`);
-            
             return { startTime, endTime };
         }
         
@@ -148,8 +143,6 @@ export default function rankingRoutes(io) {
         contestTimes.startTime = startTime;
         contestTimes.duration = duration;
         
-        console.log(`⏰ Contest times updated - Start: ${startTime}, Duration: ${duration}min`);
-        console.log('✅ Contest times updated successfully');
         return res.status(200).json({ message: "Contest time updated" });
     });
 

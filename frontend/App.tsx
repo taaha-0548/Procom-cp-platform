@@ -310,6 +310,31 @@ const App: React.FC = () => {
 
         // Start mock simulation
         startMockSimulation();
+        
+        // ⚠️ IMPORTANT: Even in mock mode, ping backend to keep Render awake
+        console.log('📡 Starting background keep-alive pings to backend...');
+        const keepAlivePing = async () => {
+          try {
+            await fetchContestTime(); // Simple GET request to keep backend alive
+            console.log('✅ Backend keep-alive ping successful');
+          } catch (error) {
+            console.warn('⚠️ Backend keep-alive ping failed:', error);
+          }
+        };
+        
+        // Ping immediately
+        keepAlivePing();
+        
+        // Ping every 5 minutes (300000ms) to prevent Render sleep
+        const pingInterval = setInterval(keepAlivePing, 300000);
+        
+        // Combine cleanups: both mock simulation and keep-alive ping
+        const originalCleanup = cleanupRealtimeRef.current;
+        cleanupRealtimeRef.current = () => {
+          if (originalCleanup) originalCleanup();
+          clearInterval(pingInterval);
+        };
+        
         return;
       }
 
