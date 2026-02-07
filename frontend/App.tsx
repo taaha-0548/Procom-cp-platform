@@ -154,6 +154,7 @@ const App: React.FC = () => {
 
   // Contest phase management
   const [phase, setPhase] = useState<Phase>('idle');
+  const phaseRef = useRef<Phase>('idle');
   const [countdownDisplay, setCountdownDisplay] = useState<string>('--:--:--');
   const [countdownLabel, setCountdownLabel] = useState<string>('');
 
@@ -294,6 +295,7 @@ const App: React.FC = () => {
 
     // Store for cleanup
     cleanupRealtimeRef.current = () => clearInterval(intervalId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Initialize teams and fetch real data from backend
@@ -352,19 +354,25 @@ const App: React.FC = () => {
           (updatedTeams) => {
             console.log('📊 Real-time update received:', updatedTeams.length);
 
-            // Update teamsRef
-            teamsRef.current = updatedTeams;
+            // Capture OLD teams before updating ref
+            const oldTeams = teamsRef.current;
 
             // Only trigger animation if we're during contest and animation is idle
-            if (phase === 'during' && animationStateRef.current === 'idle') {
-              const oldFirst = teamsRef.current[0];
+            if (phaseRef.current === 'during' && animationStateRef.current === 'idle') {
+              const oldFirst = oldTeams[0];
               const newFirst = updatedTeams[0];
               const firstPlaceChanged = oldFirst?.id !== newFirst?.id;
+
+              console.log('🔍 Checking for changes:', {
+                oldFirst: oldFirst?.name,
+                newFirst: newFirst?.name,
+                firstPlaceChanged
+              });
 
               // Check if ranks 2-5 changed
               let top5Changed = false;
               for (let i = 1; i < 5; i++) {
-                if (teamsRef.current[i] && updatedTeams[i] && teamsRef.current[i].id !== updatedTeams[i].id) {
+                if (oldTeams[i] && updatedTeams[i] && oldTeams[i].id !== updatedTeams[i].id) {
                   top5Changed = true;
                   break;
                 }
@@ -372,16 +380,22 @@ const App: React.FC = () => {
 
               // Determine which animation to play
               if (firstPlaceChanged) {
+                console.log('🚨 First place changed! Triggering emergency animation');
                 triggerEmergencyAnimation(oldFirst, newFirst, updatedTeams);
               } else if (top5Changed) {
+                console.log('⚡ Top 5 changed! Triggering glitch animation');
                 triggerGlitchAnimation(updatedTeams);
               } else {
                 triggerSilentUpdate(updatedTeams);
               }
             } else {
+              console.log(`⏸️ Animation skipped - Phase: ${phaseRef.current}, Animation state: ${animationStateRef.current}`);
               // Just update teams silently if outside contest or animation running
               setTeams(updatedTeams);
             }
+
+            // Update teamsRef AFTER checking for changes
+            teamsRef.current = updatedTeams;
           },
           (error) => {
             console.error('❌ Realtime listener error:', error);
@@ -456,14 +470,17 @@ const App: React.FC = () => {
 
       if (now < startTime) {
         setPhase('before');
+        phaseRef.current = 'before';
         setCountdownLabel('Starts in');
         setCountdownDisplay(formatHMS(startTime - now));
       } else if (now >= startTime && now <= endTime) {
         setPhase('during');
+        phaseRef.current = 'during';
         setCountdownLabel('Ends in');
         setCountdownDisplay(formatHMS(endTime - now));
       } else {
         setPhase('after');
+        phaseRef.current = 'after';
         setCountdownLabel('');
         setCountdownDisplay('Contest Ended');
         // Stop all real-time updates when contest ends
@@ -524,7 +541,7 @@ const App: React.FC = () => {
       animationStateRef.current = 'idle';
     }, TIMING.EMERGENCY_TOTAL_DURATION);
 
-  }, [isSoundEnabled, scheduleTimeout]);
+  }, [scheduleTimeout]);
 
   // Handle glitch animation (top 10 change)
   const triggerGlitchAnimation = useCallback((rankedTeams: Team[]) => {
@@ -558,23 +575,11 @@ const App: React.FC = () => {
       scheduleTimeout(endAnimation, TIMING.GLITCH_TOTAL_DURATION);
     }
 
-  }, [isSoundEnabled, scheduleTimeout]);
+  }, [scheduleTimeout]);
 
   // Handle silent update (lower rank changes)
   const triggerSilentUpdate = useCallback((rankedTeams: Team[]) => {
     setTeams(rankedTeams);
-  }, []);
-
-
-
-  // =========================================================================
-  // SIMULATION ENGINE (Removed - Now using real Socket.io updates)
-  // =========================================================================
-
-  useEffect(() => {
-    // The real-time updates are now handled by Socket.io listener in initialization
-    // This effect is no longer needed since we have setupRealtimeLeaderboardListener
-    return () => { };
   }, []);
 
   // =========================================================================
