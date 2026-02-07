@@ -11,19 +11,28 @@ dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const KEY = process.env.KEY;
 
-// ==================== CONTEST CONFIGURATION ====================
-// Update VJudge contest URL before running
-const LEADERBOARD_URL = "https://vjudge.net/contest/788394#rank";
-// ==============================================================
+// ============================================================================
+// ⚙️  CONTEST CONFIGURATION - UPDATE BEFORE EACH CONTEST
+// ============================================================================
 
-// Backend URL - can be set via environment variable
+// 1️⃣ VJudge Contest URL (get from VJudge contest page)
+const LEADERBOARD_URL = "https://vjudge.net/contest/788394#rank";
+
+// 2️⃣ Contest Start Time (ISO 8601 format with timezone)
+//    Format: YYYY-MM-DDTHH:MM:SS+05:00
+//    Example: "2026-02-07T15:00:00+05:00" = Feb 7, 2026, 3:00 PM PKT
+const CONTEST_START = "2026-02-07T15:00:00+05:00";
+
+// 3️⃣ Contest Duration (in minutes)
+//    180 = 3 hours, 240 = 4 hours, 300 = 5 hours
+const CONTEST_DURATION = 180;
+
+// ============================================================================
+// ⚙️  OPTIONAL: Backend URL (set in .env or use default)
+// ============================================================================
 const BACKENDURL = process.env.BACKEND_URL || "http://localhost:4000";
 
-// ==================== CONTEST TIMING CONFIGURATION ====================
-// Update these values directly before running the script
-const CONTEST_START = "2026-02-07T15:00:00+05:00";  // Contest start time (ISO 8601)
-const CONTEST_DURATION = 180;  // Duration in minutes
-// ======================================================================
+// ============================================================================
 
 // Calculate contest end time
 const calculateContestEnd = () => {
@@ -46,15 +55,15 @@ const calculateContestEnd = () => {
 
 const CONTEST_END = calculateContestEnd();
 
+// Scraping interval (how often to check VJudge, default: 30 seconds)
+const SCRAPING_INTERVAL = parseInt(process.env.SCRAPING_INTERVAL || "30000");
+
 // Log the calculated values
 console.log('📅 Contest timing calculated:');
 console.log('   Start:', CONTEST_START);
 console.log('   End:', CONTEST_END);
 console.log('   Duration:', CONTEST_DURATION, 'minutes');
-
-// Scraping interval (milliseconds)
-const SCRAPING_INTERVAL = parseInt(process.env.SCRAPING_INTERVAL || "30000");
-// ==============================================================
+console.log('   Scraping every:', SCRAPING_INTERVAL / 1000, 'seconds');
 
 const VIEWPORT = { width: 1920, height: 1080 };
 const RANK_TABLE_SELECTOR = "#contest-rank-table";
