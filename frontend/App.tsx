@@ -310,7 +310,7 @@ const App: React.FC = () => {
 
         // Start mock simulation
         startMockSimulation();
-        
+
         // ⚠️ IMPORTANT: Even in mock mode, ping backend to keep Render awake
         console.log('📡 Starting background keep-alive pings to backend...');
         const keepAlivePing = async () => {
@@ -321,20 +321,20 @@ const App: React.FC = () => {
             console.warn('⚠️ Backend keep-alive ping failed:', error);
           }
         };
-        
+
         // Ping immediately
         keepAlivePing();
-        
+
         // Ping every 5 minutes (300000ms) to prevent Render sleep
         const pingInterval = setInterval(keepAlivePing, 300000);
-        
+
         // Combine cleanups: both mock simulation and keep-alive ping
         const originalCleanup = cleanupRealtimeRef.current;
         cleanupRealtimeRef.current = () => {
           if (originalCleanup) originalCleanup();
           clearInterval(pingInterval);
         };
-        
+
         return;
       }
 
@@ -772,7 +772,7 @@ const App: React.FC = () => {
               Next
             </button>
           </div>
-        )}  
+        )}
       </main>
 
 
@@ -825,10 +825,11 @@ const App: React.FC = () => {
                   textShadow: '0 0 10px rgba(255, 255, 255, 0.2)'
                 }}
               >
-                TOP 2 CHAMPIONS
+                TOP 3 CHAMPIONS
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
-                {teams.slice(0, 2).map((team, index) => {
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+                {teams.slice(0, 3).map((team, index) => {
+                  // Rank #1: Red Reality Champion
                   // Rank #1: Red Reality Champion
                   // Rank #2 & #3: Cyan Ghost Runners-up
                   const isRedChampion = index === 0;
@@ -845,7 +846,7 @@ const App: React.FC = () => {
                   return (
                     <div
                       key={team.id}
-                      className="relative rounded-lg p-4 sm:p-6 md:p-8 backdrop-blur-md transform transition-all duration-300 hover:scale-105 hover:-translate-y-2 overflow-hidden"
+                      className={`relative rounded-lg p-4 sm:p-6 md:p-8 backdrop-blur-md transform transition-all duration-300 hover:scale-105 hover:-translate-y-2 overflow-hidden ${index === 0 ? 'md:mt-0' : index === 1 ? 'md:mt-12' : 'md:mt-24'}`}
                       style={{
                         background: 'linear-gradient(180deg, rgba(20, 20, 20, 0.9) 0%, rgba(10, 10, 10, 0.95) 100%)',
                         boxShadow: `0 20px 40px -10px ${isRedChampion ? 'rgba(255, 42, 77, 0.6)' : 'rgba(0, 255, 255, 0.5)'}, inset 0 -4px 0 0 ${isRedChampion ? '#ff2a4d' : '#00ffff'}`
@@ -869,7 +870,10 @@ const App: React.FC = () => {
                       >
                         #{team.rank}
                       </div>
-                      <div className="text-white font-orbitron text-lg sm:text-xl md:text-2xl mb-3 sm:mb-4">{team.name}</div>
+                      <div className="text-white font-orbitron text-lg sm:text-xl md:text-2xl mb-2 sm:mb-3">{team.name}</div>
+                      <div className="text-white/80 font-orbitron text-sm sm:text-base font-bold tracking-wider">
+                        {team.solved} {team.solved === 1 ? 'PROBLEM' : 'PROBLEMS'} SOLVED
+                      </div>
                     </div>
                   );
                 })}

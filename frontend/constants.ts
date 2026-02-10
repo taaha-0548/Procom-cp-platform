@@ -9,16 +9,17 @@ export const PROBLEMS: ProblemData[] = [
   { id: 'p6', label: 'F', name: 'Problem F' },
   { id: 'p7', label: 'G', name: 'Problem G' },
   { id: 'p8', label: 'H', name: 'Problem H' },
+  { id: 'p9', label: 'I', name: 'Problem I' },
 ];
 
 const NOW = Date.now();
-const TEN_MINUTES = 10 * 60 * 1000;
+const ONE_MINUTE = 1 * 60 * 1000;
 
 // ====================================================================================
-// CONTEST TIMING - Uses current time + 10 minutes
+// CONTEST TIMING - Uses current time + 1 minute
 // ====================================================================================
 // In mock mode: uses current time
-// In production mode: uses current time when frontend loads + 10 minute duration
+// In production mode: uses current time when frontend loads + 1 minute duration
 // ====================================================================================
 
 const getContestStart = (): number => {
@@ -36,10 +37,10 @@ const getContestStart = (): number => {
 
 const getContestEnd = (): number => {
   const startTime = getContestStart();
-  
-  // Always use 10-minute duration
-  console.log('⏰ Setting 10-minute contest duration');
-  return startTime + TEN_MINUTES;
+
+  // Always use 1-minute duration
+  console.log('⏰ Setting 1-minute contest duration');
+  return startTime + ONE_MINUTE;
 };
 
 export const INITIAL_CONFIG: ContestConfig = {
@@ -245,11 +246,11 @@ export const MOCK_TEAMS: Team[] = [
     const teamNum = i + 11;
     const solved = Math.max(0, Math.floor(Math.random() * 4));
     const penalty = solved > 0 ? 20 + Math.floor(Math.random() * 100) : 0;
-    
+
     const createSubmissions = () => {
       const subs: any = {};
       const solvedProblems = new Set<string>();
-      
+
       // Randomly select which problems to solve
       if (solved > 0) {
         const problemIds = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8'];
@@ -258,7 +259,7 @@ export const MOCK_TEAMS: Team[] = [
           solvedProblems.add(shuffled[j]);
         }
       }
-      
+
       // Create submission for each problem
       PROBLEMS.forEach(prob => {
         if (solvedProblems.has(prob.id)) {
@@ -281,10 +282,10 @@ export const MOCK_TEAMS: Team[] = [
           };
         }
       });
-      
+
       return subs;
     };
-    
+
     const teamNames = [
       'Algorithm Assassins', 'Compile Commanders', 'Debug Demons', 'Exception Handlers',
       'Function Fighters', 'Git Gurus', 'Hash Heroes', 'Iterator Insurgents',
@@ -297,7 +298,7 @@ export const MOCK_TEAMS: Team[] = [
       'Heap Hunters', 'Index Invaders', 'Join Jesters', 'Key Keepers',
       'Loop Luminaries', 'Mutex Mavericks', 'Node Nomads', 'Overflow Orchestra'
     ];
-    
+
     return {
       id: `t${teamNum}`,
       name: teamNames[i] || `Team ${teamNum}`,
